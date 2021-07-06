@@ -1,6 +1,14 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { validarCampos } = require('../middlewares/validar-campos');
+// const { validarCampos } = require('../middlewares/validar-campos');
+// const { validarJWT } = require('../middlewares/validar-jwt');
+// const { esAdminRole, tieneRole } = require('../middlewares/validar-role');
+const {
+    validarCampos,
+    validarJWT,
+    esAdminRole,
+    tieneRole,
+} = require('../middlewares/'); // No es necesario el index
 const {
     esRoleValido,
     emailExiste,
@@ -46,6 +54,9 @@ router.post(
 
 router.delete(
     '/:id', [
+        validarJWT,
+        // esAdminRole, Esto valida que sea unicamente del rol ADMIN
+        tieneRole('ADMIN_ROLE', 'VENTAS_ROLE'), // Este middelware valida que se de varios roles
         check('id', 'No es un ID válido').isMongoId(),
         check('id').custom(existeUsuarioPorId),
         validarCampos,
